@@ -14,13 +14,10 @@ struct ToDoListView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(viewModel.items) { item in
-                    // TODO: make sections
-                    toDoCell(with: item)
-                        .swipeActions {
-                            deleteActionButton(for: item)
-                            editActionButton(for: item)
-                        }
+                ForEach(ToDoItem.Group.allCases) { group in
+                    if !viewModel.items.filter({ $0.group == group }).isEmpty {
+                        sectionView(group: group)
+                    }
                 }
             }
             .navigationTitle("My To Do List")
@@ -63,6 +60,21 @@ struct ToDoListView: View {
         }
     }
     
+    private func sectionView(group: ToDoItem.Group) -> some View {
+        Section {
+            ForEach(viewModel.items.filter { $0.group == group }) { item in
+                toDoCell(with: item)
+                    .swipeActions {
+                        deleteActionButton(for: item)
+                        editActionButton(for: item)
+                    }
+            }
+        } header: {
+            Text(group.labelTitle())
+                .font(.system(size: 16, weight: .regular))
+        }
+    }
+    
     private func toDoCell(with item: ToDoItem) -> some View {
         HStack {
             VStack(alignment: .leading) {
@@ -86,8 +98,7 @@ struct ToDoListView: View {
             
             Button {
                 withAnimation {
-                    // TODO: in viewModel
-                    item.isCompleted.toggle()
+                    viewModel.perform(action: .changeIsCompleted(item))
                 }
             } label: {
                 Image(systemName: "checkmark")
@@ -102,8 +113,7 @@ struct ToDoListView: View {
     private func deleteActionButton(for item: ToDoItem) -> some View {
         Button(role: .destructive) {
             withAnimation {
-                // TODO: - in viewModel
-//                modelContext.delete(item)
+                viewModel.perform(action: .deleteItem(item))
             }
         } label: {
             Label("Delete", systemImage: "trash")

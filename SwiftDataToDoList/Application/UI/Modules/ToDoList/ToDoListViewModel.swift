@@ -37,6 +37,10 @@ final class ToDoListViewModel {
                 return
             }
             toDoEditItem = item
+        case .changeIsCompleted(let item):
+            item.isCompleted.toggle()
+        case .deleteItem(let item):
+            dataSource.removeItem(item)
         }
     }
 }
@@ -44,4 +48,6 @@ final class ToDoListViewModel {
 enum ToDoListAction {
     case showCreateToDoView
     case showUpdateToDoView(item: ToDoItem?)
+    case changeIsCompleted(ToDoItem)
+    case deleteItem(ToDoItem)
 }

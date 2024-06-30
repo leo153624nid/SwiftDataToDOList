@@ -15,6 +15,31 @@ final class ToDoItem {
     var isCritical: Bool
     var isCompleted: Bool
     
+    enum Group: Int, CaseIterable, Identifiable {
+        case past = 0
+        case today
+        case upcoming
+        
+        var id: Int { self.rawValue }
+        
+        func labelTitle() -> String {
+            switch self {
+            case .past: "Past"
+            case .today: "Today"
+            case .upcoming: "Upcoming & Overdue"
+            }
+        }
+    }
+    
+    var group: Group {
+        if timestamp.isToday {
+            return .today
+        } else if !isCompleted {
+            return .upcoming
+        }
+        return .past
+    }
+    
     init(title: String = "",
          timestamp: Date = .now,
          isCritical: Bool = false,
