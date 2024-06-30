@@ -10,14 +10,20 @@ import SwiftUI
 struct CreateToDoView: View {
     
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var context
+    
+    @State private var item = ToDoItem()
     
     var body: some View {
         List {
-            TextField("Name", text: .constant(""))
+            TextField("Name", text: $item.title)
             DatePicker("Choose a date",
-                       selection: .constant(.now))
-            Toggle("Is important?", isOn: .constant(false))
+                       selection: $item.timestamp)
+            Toggle("Is important?", isOn: $item.isCritical)
             Button("Create") {
+                withAnimation {
+                    context.insert(item)
+                }
                 dismiss()
             }
         }
@@ -27,4 +33,5 @@ struct CreateToDoView: View {
 
 #Preview {
     CreateToDoView()
+        .modelContainer(for: ToDoItem.self)
 }

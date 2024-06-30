@@ -14,6 +14,7 @@
 		5C9D1E502C12F0A4007525B5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C9D1E4F2C12F0A4007525B5 /* Preview Assets.xcassets */; };
 		5C9D1E5F2C12FF32007525B5 /* ToDoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9D1E5E2C12FF32007525B5 /* ToDoListView.swift */; };
 		5C9D1E612C1301C6007525B5 /* CreateToDoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9D1E602C1301C6007525B5 /* CreateToDoView.swift */; };
+		5CE067422C319448004659B8 /* UpdateToDoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE067412C319448004659B8 /* UpdateToDoView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,7 @@
 		5C9D1E4F2C12F0A4007525B5 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		5C9D1E5E2C12FF32007525B5 /* ToDoListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoListView.swift; sourceTree = "<group>"; };
 		5C9D1E602C1301C6007525B5 /* CreateToDoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateToDoView.swift; sourceTree = "<group>"; };
+		5CE067412C319448004659B8 /* UpdateToDoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateToDoView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +138,7 @@
 			children = (
 				5C9D1E5E2C12FF32007525B5 /* ToDoListView.swift */,
 				5C9D1E602C1301C6007525B5 /* CreateToDoView.swift */,
+				5CE067412C319448004659B8 /* UpdateToDoView.swift */,
 			);
 			path = ToDoList;
 			sourceTree = "<group>";
@@ -213,6 +216,7 @@
 				5C9D1E492C12F0A2007525B5 /* ContentView.swift in Sources */,
 				5C9D1E4B2C12F0A2007525B5 /* ToDoItem.swift in Sources */,
 				5C9D1E5F2C12FF32007525B5 /* ToDoListView.swift in Sources */,
+				5CE067422C319448004659B8 /* UpdateToDoView.swift in Sources */,
 				5C9D1E472C12F0A2007525B5 /* SwiftDataToDoListApp.swift in Sources */,
 				5C9D1E612C1301C6007525B5 /* CreateToDoView.swift in Sources */,
 			);

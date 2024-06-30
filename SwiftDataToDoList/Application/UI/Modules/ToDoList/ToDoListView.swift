@@ -10,23 +10,30 @@ import SwiftUI
 import SwiftData
 
 struct ToDoListView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [ToDoItem]
     
+    @Environment(\.modelContext) private var modelContext
+    @Query(
+//        filter: #Predicate<ToDoItem> { $0.isCompleted == false },
+        sort: \ToDoItem.timestamp,
+        order: .reverse
+    ) private var items: [ToDoItem]
+    
+    @State private var toDoEditItem: ToDoItem?
     @State private var showCreateToDoView = false
 
     var body: some View {
         NavigationStack {
             List {
                 ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
+                    // TODO: make sections
+                    toDoCell(with: item)
+                        .swipeActions {
+                            deleteActionButton(for: item)
+                            editActionButton(for: item)
+                        }
                 }
-//                .onDelete(perform: deleteItems)
             }
+            .navigationTitle("My To Do List")
             .toolbar {
                 toolBarCreateItem
                 
@@ -41,6 +48,12 @@ struct ToDoListView: View {
             }
             .presentationDetents([.medium])
         }
+        .sheet(item: $toDoEditItem) {
+            toDoEditItem = nil
+        } content: { item in
+            UpdateToDoView(item: item)
+        }
+
     }
     
     private var toolBarCreateItem: some ToolbarContent {
@@ -58,21 +71,62 @@ struct ToDoListView: View {
             EditButton()
         }
     }
+    
+    private func toDoCell(with item: ToDoItem) -> some View {
+        HStack {
+            VStack(alignment: .leading) {
+                if item.isCritical {
+                    Image(systemName: "exclamationmark.3")
+                        .symbolVariant(.fill)
+                        .foregroundColor(.red)
+                        .font(.largeTitle)
+                        .bold()
+                }
+                
+                Text(item.title)
+                    .font(.largeTitle)
+                    .bold()
+                
+                Text("\(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .shortened))")
+                    .font(.callout)
+            }
+            
+            Spacer()
+            
+            Button {
+                withAnimation {
+                    item.isCompleted.toggle()
+                }
+            } label: {
+                Image(systemName: "checkmark")
+                    .symbolVariant(.circle.fill)
+                    .foregroundStyle(item.isCompleted ? .green : .gray)
+                    .font(.largeTitle)
+            }
+            .buttonStyle(.plain)
+        }
+    }
+    
+    private func deleteActionButton(for item: ToDoItem) -> some View {
+        Button(role: .destructive) {
+            withAnimation {
+                modelContext.delete(item)
+            }
+        } label: {
+            Label("Delete", systemImage: "trash")
+                .symbolVariant(.fill)
+        }
+    }
+    
+    private func editActionButton(for item: ToDoItem) -> some View {
+        Button {
+            toDoEditItem = item
+        } label: {
+            Label("Edit", systemImage: "pencil")
+        }
+        .tint(.orange)
+    }
 
-//    private func addItem() {
-//        withAnimation {
-//            let newItem = ToDoItem(timestamp: Date())
-//            modelContext.insert(newItem)
-//        }
-//    }
-
-//    private func deleteItems(offsets: IndexSet) {
-//        withAnimation {
-//            for index in offsets {
-//                modelContext.delete(items[index])
-//            }
-//        }
-//    }
 }
 
 #Preview {
