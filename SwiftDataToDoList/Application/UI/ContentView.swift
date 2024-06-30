@@ -6,18 +6,17 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct ContentView: View {
 
     var body: some View {
         Group {
             ToDoListView()
+            // TODO: add another modules (for example, Login Module)
         }
     }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: ToDoItem.self, inMemory: true)
 }

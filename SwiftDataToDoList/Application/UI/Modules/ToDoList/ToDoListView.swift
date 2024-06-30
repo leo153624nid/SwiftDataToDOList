@@ -5,26 +5,16 @@
 //  Created by A Ch on 07.06.2024.
 //
 
-import Foundation
 import SwiftUI
-import SwiftData
 
 struct ToDoListView: View {
     
-    @Environment(\.modelContext) private var modelContext
-    @Query(
-//        filter: #Predicate<ToDoItem> { $0.isCompleted == false },
-        sort: \ToDoItem.timestamp,
-        order: .reverse
-    ) private var items: [ToDoItem]
-    
-    @State private var toDoEditItem: ToDoItem?
-    @State private var showCreateToDoView = false
+    @State private var viewModel = ToDoListViewModel()
 
     var body: some View {
         NavigationStack {
             List {
-                ForEach(items) { item in
+                ForEach(viewModel.items) { item in
                     // TODO: make sections
                     toDoCell(with: item)
                         .swipeActions {
@@ -37,19 +27,20 @@ struct ToDoListView: View {
             .toolbar {
                 toolBarCreateItem
                 
-                if !items.isEmpty {
+                if !viewModel.items.isEmpty {
                     toolBarEditItem
                 }
             }
         }
-        .sheet(isPresented: $showCreateToDoView) {
+        .sheet(isPresented: $viewModel.showCreateToDoView) {
             NavigationStack {
                 CreateToDoView()
             }
             .presentationDetents([.medium])
         }
-        .sheet(item: $toDoEditItem) {
-            toDoEditItem = nil
+        .sheet(item: $viewModel.toDoEditItem) {
+            // on dismiss
+            viewModel.perform(action: .showUpdateToDoView(item: nil))
         } content: { item in
             UpdateToDoView(item: item)
         }
@@ -59,7 +50,7 @@ struct ToDoListView: View {
     private var toolBarCreateItem: some ToolbarContent {
         ToolbarItem {
             Button {
-                showCreateToDoView.toggle()
+                viewModel.perform(action: .showCreateToDoView)
             } label: {
                 Label("Add Item", systemImage: "plus")
             }
@@ -95,6 +86,7 @@ struct ToDoListView: View {
             
             Button {
                 withAnimation {
+                    // TODO: in viewModel
                     item.isCompleted.toggle()
                 }
             } label: {
@@ -110,7 +102,8 @@ struct ToDoListView: View {
     private func deleteActionButton(for item: ToDoItem) -> some View {
         Button(role: .destructive) {
             withAnimation {
-                modelContext.delete(item)
+                // TODO: - in viewModel
+//                modelContext.delete(item)
             }
         } label: {
             Label("Delete", systemImage: "trash")
@@ -120,7 +113,7 @@ struct ToDoListView: View {
     
     private func editActionButton(for item: ToDoItem) -> some View {
         Button {
-            toDoEditItem = item
+            viewModel.perform(action: .showUpdateToDoView(item: item))
         } label: {
             Label("Edit", systemImage: "pencil")
         }
@@ -131,5 +124,4 @@ struct ToDoListView: View {
 
 #Preview {
     ToDoListView()
-        .modelContainer(for: ToDoItem.self, inMemory: true)
 }
